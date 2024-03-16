@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Copper_Iron Document</title>
+</head>
+<body>
+    <h1>Update Copper_Iron Document</h1>
+
+    <form id="updateForm" action="/update_copper_iron" method="POST">
+        <!-- Display existing values or leave blank for new entries -->
+        <label for="htc">HTC:</label>
+        <input type="text" id="htc" name="htc" value="{{ document.htc|default('') }}" required><br>
+
+        <!-- Hidden field to store document ID -->
+        <input type="hidden" id="document_id" name="_id" value="{{ document._id|default('') }}">
+
+        <button type="button" onclick="updateDocument()">Update Document</button>
+    </form>
+
+    <script>
+        // Function to send an AJAX request to update the document
+        function updateDocument() {
+            var formData = new FormData(document.getElementById('updateForm'));
+
+            fetch('/update_copper_iron', {
+                method: 'PATCH',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch the existing document when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace '65af9ac77392d1d059eda7ff' with the correct document ID
+            fetch('/update_copper_iron/65af9ac77392d1d059eda7ff')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        populateForm(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // Function to populate form fields with existing document values
+        function populateForm(document) {
+            document.getElementById('htc').value = document.htc || '';
+
+            // Set the document ID in the hidden field
+            document.getElementById('document_id').value = document._id || '';
+        }
+    </script>
+</body>
+</html>

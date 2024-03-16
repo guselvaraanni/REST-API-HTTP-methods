@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update magnet Document</title>
+</head>
+<body>
+    <h1>Update magnet Document</h1>
+
+    <form id="updateForm" action="/update_magnet" method="POST">
+        <!-- Display existing values or leave blank for new entries -->
+        <label for="b_r">B_r:</label>
+        <input type="text" id="b_r" name="b_r" value="{{ document.b_r|default('') }}" required><br>
+
+        <label for="k_pm">K_pm:</label>
+        <input type="text" id="k_pm" name="k_pm" value="{{ document.k_pm|default('') }}" required><br>
+
+        <label for="mu_ra">Mu_ra:</label>
+        <input type="text" id="mu_ra" name="mu_ra" value="{{ document.mu_ra|default('') }}" required><br>
+
+        <label for="density">Density:</label>
+        <input type="text" id="density" name="density" value="{{ document.density|default('') }}" required><br>
+
+        <label for="rs_per_g">Rs_per_g:</label>
+        <input type="text" id="rs_per_g" name="rs_per_g" value="{{ document.rs_per_g|default('') }}" required><br>
+
+        <!-- Hidden field to store document ID -->
+        <input type="hidden" id="document_id" name="_id" value="{{ document._id|default('') }}">
+
+        <button type="button" onclick="updateDocument()">Update Document</button>
+    </form>
+
+    <script>
+        // Function to send an AJAX request to update the document
+        function updateDocument() {
+            var formData = new FormData(document.getElementById('updateForm'));
+
+            fetch('/update_magnet', {
+                method: 'PATCH',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch the existing document when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace '65af9ac77392d1d059eda7ff' with the correct document ID
+            fetch('/update_magnet/65af8520199ac033db4712b7')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        populateForm(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // Function to populate form fields with existing document values
+        function populateForm(document) {
+            document.getElementById('b_r').value = document.b_r || '';
+            document.getElementById('k_pm').value = document.k_pm || '';
+            document.getElementById('mu_ra').value = document.mu_ra || '';
+            document.getElementById('density').value = document.density || '';
+            document.getElementById('rs_per_g').value = document.rs_per_g || '';
+
+            // Set the document ID in the hidden field
+            document.getElementById('document_id').value = document._id || '';
+        }
+    </script>
+</body>
+</html>

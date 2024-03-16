@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrieve Data</title>
+</head>
+<body>
+    <h2>Retrieve Data</h2>
+    <form action="/retrieve" method="post">
+        <label for="swg_key">Enter SWG Key:</label>
+        <input type="text" id="swg_key" name="swg_key" required><br>
+        <button type="submit">Retrieve</button>
+    </form>
+
+    {% if swg_key %}
+        {% if error_message %}
+            <p>{{ error_message }}</p>
+        {% else %}
+            <p>The value for {{ swg_key }} is: {{ value }}</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

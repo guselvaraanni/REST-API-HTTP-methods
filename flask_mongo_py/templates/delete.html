@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Document</title>
+</head>
+<body>
+
+    <h1>Delete Document</h1>
+
+    <form action="{{ url_for('delete_document') }}" method="post">
+        <label for="collection">Select Collection:</label>
+        <select id="collection" name="collection" required>
+            {% for collection in collections %}
+                <option value="{{ collection }}">{{ collection }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="document_id">Enter Document ID:</label>
+        <input type="text" id="document_id" name="document_id" required>
+        <br>
+        <button type="submit">Delete Document</button>
+    </form>
+
+</body>
+</html>

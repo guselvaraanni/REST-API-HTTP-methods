@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="templates/styles.css">
+    <title>Update Steel Document</title>
+</head>
+<body>
+    <h1>Update Steel Document</h1>
+
+    <form id="updateForm" action="/update_steel" method="POST">
+        <!-- Display existing values or leave blank for new entries -->
+        <label for="b_sat">B_sat:</label>
+        <input type="text" id="b_sat" name="b_sat" value="{{ document.b_sat|default('') }}" required><br>
+
+        <label for="grade">Grade:</label>
+        <input type="text" id="grade" name="grade" value="{{ document.grade|default('') }}" required><br>
+
+        <label for="thickness">Thickness:</label>
+        <input type="text" id="thickness" name="thickness" value="{{ document.thickness|default('') }}" required><br>
+
+        <label for="density">Density:</label>
+        <input type="text" id="density" name="density" value="{{ document.density|default('') }}" required><br>
+
+        <label for="rs_per_g">Rs_per_g:</label>
+        <input type="text" id="rs_per_g" name="rs_per_g" value="{{ document.rs_per_g|default('') }}" required><br>
+
+        <label for="hyst_factor">Hyst_factor:</label>
+        <input type="text" id="hyst_factor" name="hyst_factor" value="{{ document.hyst_factor|default('') }}" required><br>
+
+        <label for="eddy_factor">Eddy_factor:</label>
+        <input type="text" id="eddy_factor" name="eddy_factor" value="{{ document.eddy_factor|default('') }}" required><br>
+
+        <label for="extra_factor">Extra_factor:</label>
+        <input type="text" id="extra_factor" name="extra_factor" value="{{ document.extra_factor|default('') }}" required><br>
+
+        <!-- Hidden field to store document ID -->
+        <input type="hidden" id="document_id" name="_id" value="{{ document._id|default('') }}">
+
+        <button type="button" onclick="updateDocument()">Update Document</button>
+    </form>
+
+    <script>
+        // Function to send an AJAX request to update the document
+        function updateDocument() {
+            var formData = new FormData(document.getElementById('updateForm'));
+
+            fetch('/update_steel', {
+                method: 'PATCH',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch the existing document when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace '65af9ac77392d1d059eda7ff' with the correct document ID
+            fetch('/update_steel/65af9ac77392d1d059eda7ff')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        populateForm(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // Function to populate form fields with existing document values
+        function populateForm(document) {
+            document.getElementById('b_sat').value = document.b_sat || '';
+            document.getElementById('grade').value = document.grade || '';
+            document.getElementById('thickness').value = document.thickness || '';
+            document.getElementById('density').value = document.density || '';
+            document.getElementById('rs_per_g').value = document.rs_per_g || '';
+            document.getElementById('hyst_factor').value = document.hyst_factor || '';
+            document.getElementById('eddy_factor').value = document.eddy_factor || '';
+            document.getElementById('extra_factor').value = document.extra_factor || '';
+
+            // Set the document ID in the hidden field
+            document.getElementById('document_id').value = document._id || '';
+        }
+    </script>
+</body>
+</html>

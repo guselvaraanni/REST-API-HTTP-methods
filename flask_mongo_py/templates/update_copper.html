@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Copper Document</title>
+</head>
+<body>
+    <h1>Update Copper Document</h1>
+
+    <form id="updateForm" action="/update_copper" method="POST">
+        <!-- Display existing values or leave blank for new entries -->
+        <label for="wire_diameter">Wire Diameter:</label>
+        <input type="text" id="wire_diameter" name="wire_diameter" value="{{ document.wire_diameter|default('') }}" required><br>
+
+        <label for="resistivity">Resistivity:</label>
+        <input type="text" id="resistivity" name="resistivity" value="{{ document.resistivity|default('') }}" required><br>
+
+        <label for="temp_coeff_resistivity">Temperature Coefficient of Resistivity:</label>
+        <input type="text" id="temp_coeff_resistivity" name="temp_coeff_resistivity" value="{{ document.temp_coeff_resistivity|default('') }}" required><br>
+
+        <label for="density">Density:</label>
+        <input type="text" id="density" name="density" value="{{ document.density|default('') }}" required><br>
+
+        <label for="rs_per_g">Rs_per_g:</label>
+        <input type="text" id="rs_per_g" name="rs_per_g" value="{{ document.rs_per_g|default('') }}" required><br>
+
+        <!-- Hidden field to store document ID -->
+        <input type="hidden" id="document_id" name="_id" value="{{ document._id|default('') }}">
+
+        <button type="button" onclick="updateDocument()">Update Document</button>
+    </form>
+
+    <script>
+        // Function to send an AJAX request to update the document
+        function updateDocument() {
+            var formData = new FormData(document.getElementById('updateForm'));
+
+            fetch('/update_copper', {
+                method: 'PATCH',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Fetch the existing document when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace '65af9ac77392d1d059eda7ff' with the correct document ID
+            fetch('/update_copper/65af9dae85c79cd2480a2499')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        populateForm(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // Function to populate form fields with existing document values
+        function populateForm(document) {
+            document.getElementById('wire_diameter').value = document.wire_diameter || '';
+            document.getElementById('resistivity').value = document.resistivity || '';
+            document.getElementById('temp_coeff_resistivity').value = document.temp_coeff_resistivity || '';
+            document.getElementById('density').value = document.density || '';
+            document.getElementById('rs_per_g').value = document.rs_per_g || '';
+
+            // Set the document ID in the hidden field
+            document.getElementById('document_id').value = document._id || '';
+        }
+    </script>
+</body>
+</html>

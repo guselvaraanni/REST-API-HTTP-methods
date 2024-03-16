@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Data Display - copper</title>
+    <style>
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #004080;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #004080;
+    color: white;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label, input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+select, input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #004080;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #00264d;
+}
+
+    </style>
+</head>
+<body>
+    
+    <br>
+    <h2>Post Data</h2>
+    <form id="postForm">
+        Collection:
+        <select name="collection" required>
+            
+            <option value="copper">Copper</option>
+        </select><br>
+        wire_diameter: <input type="text" name="wire_diameter" required><br>
+        resistivity: <input type="text" name="resistivity" required><br>
+        Temp_coeff_of_resistivity: <input type="text" name="temp_coeff_resistivity" required><br>
+        Density: <input type="text" name="density" required><br>
+        Rs_per_g: <input type="text" name="rs_per_g" required><br>
+        
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById('postForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var formData = new FormData(this);
+            var jsonData = {};
+            
+            formData.forEach(function(value, key) {
+                jsonData[key] = value;
+            });
+
+            fetch('/post_copper', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
